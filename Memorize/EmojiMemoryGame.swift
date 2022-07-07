@@ -13,9 +13,9 @@ class EmojiMemoryGame: ObservableObject {
     // 在這個頁面裡不必每次都宣告型別全稱
     typealias Card = MemoryGame<String>.Card
     
-    private static let emoji = ["🚔","✈️","🚎","🚅","🚜","🚁","🚀","🛴","🎠","🚢","🚛","🛥"]
+    private static let emoji = ["🚔","✈️","🚎","🚅","🚜","🚁","🚀","🛴","🎠","🚢","🚛","🛥","🛩","🚖","🛰","🛸","🛶","🚇","🚤","⛴"]
     private static func createMemoryGame() -> MemoryGame<String> {
-        MemoryGame<String>(numbersOfPairsOfCards: 4) { index in
+        MemoryGame<String>(numbersOfPairsOfCards: 10) { index in
             emoji[index]
         }
     }
