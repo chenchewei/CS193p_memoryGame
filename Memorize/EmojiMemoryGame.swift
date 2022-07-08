@@ -13,10 +13,28 @@ class EmojiMemoryGame: ObservableObject {
     // 在這個頁面裡不必每次都宣告型別全稱
     typealias Card = MemoryGame<String>.Card
     
-    private static let emoji = ["🚔","✈️","🚎","🚅","🚜","🚁","🚀","🛴","🎠","🚢","🚛","🛥","🛩","🚖","🛰","🛸","🛶","🚇","🚤","⛴"]
+    enum GameType {
+        case Food
+        case Nature
+        case Vehicle
+    }
+    
+    private static var gameType: GameType = .Vehicle
+    
+    private static let vehicles = ["🚔","✈️","🚎","🚅","🚜","🚁","🚀","🛴","🎠","🚢","🚛","🛥","🛩","🚖","🛰","🛸","🛶","🚇","🚤","⛴"]
+    private static let nature = ["🐳","🐸","🐔","🦉","🐵","🦆","🦐","🦑","🐍","🦧"]
+    private static let food = ["🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍈","🍒","🥭","🍆","🍔","🥩","🥐","🍞","🥯","🧆","🍙","🍦","🍫","🥜","🍪","🍿","🍩","🍭","🍡","🥟","🍱"]
+    
     private static func createMemoryGame() -> MemoryGame<String> {
         MemoryGame<String>(numbersOfPairsOfCards: 10) { index in
-            emoji[index]
+            switch gameType {
+            case .Food:
+                return food[index]
+            case .Nature:
+                return nature[index]
+            case .Vehicle:
+                return vehicles[index]
+            }
         }
     }
     
@@ -29,5 +47,11 @@ class EmojiMemoryGame: ObservableObject {
     // MARK: - Intent(s)
     func choose(_ card: Card) {
         model.choose(card)
+    }
+    
+    func updateGameType(to type: GameType) {
+        guard EmojiMemoryGame.gameType != type else { return }
+        EmojiMemoryGame.gameType = type
+        model = EmojiMemoryGame.createMemoryGame()
     }
 }

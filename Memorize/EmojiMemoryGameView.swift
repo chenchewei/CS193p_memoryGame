@@ -13,6 +13,11 @@ struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
 
     var body: some View {
+        VStack {
+            Text("Memorize!")
+                .font(.system(.largeTitle, design: .rounded))
+                .foregroundColor(Color(red: 0.988, green: 0.716, blue: 0.057))
+                
             AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in
 //                cardView(for: card)
                 CardView(card: card)
@@ -21,8 +26,23 @@ struct EmojiMemoryGameView: View {
                         viewModel.choose(card)
                     }
             }
-        .foregroundColor(.cyan)
-        .padding(.horizontal)
+            .foregroundColor(.cyan)
+            .padding(.horizontal)
+            HStack(spacing: 15) {
+                ThemeView(title: " Vehicle ", imageName: "car.2")
+                    .onTapGesture {
+                        viewModel.updateGameType(to: .Vehicle)
+                    }
+                ThemeView(title: " Nature ", imageName: "globe.asia.australia")
+                    .onTapGesture {
+                        viewModel.updateGameType(to: .Nature)
+                    }
+                ThemeView(title: " Food ", imageName: "fork.knife")
+                    .onTapGesture {
+                        viewModel.updateGameType(to: .Food)
+                    }
+            }
+        }
     }
     
 //    @ViewBuilder
@@ -54,7 +74,7 @@ struct CardView: View {
                         endAngle: Angle(degrees: 20))
                         .padding(DrawingConstants.piePadding)
                         .opacity(DrawingConstants.pieOpacity)
-                    Text(card.content).font(.largeTitle).padding()
+                    Text(card.content).font(.largeTitle).padding(4)
                 } else if card.isMatched {
                     shape.opacity(DrawingConstants.matchedOpacity)
                 } else {
@@ -79,11 +99,28 @@ struct CardView: View {
     
 }
 
+struct ThemeView: View {
+    
+    let title: String
+    let imageName: String
+    
+    var body: some View {
+        VStack {
+            Image(systemName: imageName)
+                .aspectRatio(contentMode: .fit)
+            Text(title)
+        }
+        .foregroundColor(.cyan)
+    }
+    
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let game = EmojiMemoryGame()
         EmojiMemoryGameView(viewModel: game)
             .preferredColorScheme(.dark)
+            .previewInterfaceOrientation(.portrait)
         EmojiMemoryGameView(viewModel: game)
             .preferredColorScheme(.light)
     }
