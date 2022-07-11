@@ -14,49 +14,31 @@ struct EmojiMemoryGameView: View {
 
     var body: some View {
         VStack {
-            Text("Memorize!")
-                .font(.system(.largeTitle, design: .rounded))
-                .foregroundColor(Color(red: 0.988, green: 0.716, blue: 0.057))
+            Text("\(viewModel.themeTopic)")
+                .font(.largeTitle)
+                .foregroundColor(viewModel.themeColor)
                 
             AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in
-//                cardView(for: card)
                 CardView(card: card)
                     .padding(4)
                     .onTapGesture {
                         viewModel.choose(card)
                     }
             }
-            .foregroundColor(.cyan)
+            .foregroundColor(viewModel.themeColor)
             .padding(.horizontal)
-            HStack(spacing: 15) {
-                ThemeView(title: " Vehicle ", imageName: "car.2")
-                    .onTapGesture {
-                        viewModel.updateGameType(to: .Vehicle)
-                    }
-                ThemeView(title: " Nature ", imageName: "globe.asia.australia")
-                    .onTapGesture {
-                        viewModel.updateGameType(to: .Nature)
-                    }
-                ThemeView(title: " Food ", imageName: "fork.knife")
-                    .onTapGesture {
-                        viewModel.updateGameType(to: .Food)
-                    }
+            HStack(spacing: 45) {
+                Text("Score: \(viewModel.score)")
+                Button {
+                    viewModel.newGame()
+                } label: {
+                    Text("New Game")
+                }
+
             }
+            .font(.title)
         }
     }
-    
-//    @ViewBuilder
-//    private func cardView(for card: EmojiMemoryGame.Card) -> some View {
-//        if card.isMatched && !card.isFaceUp {
-//            Rectangle().opacity(0)
-//        } else {
-//            CardView(card: card)
-//                .padding(4)
-//                .onTapGesture {
-//                    viewModel.choose(card)
-//                }
-//        }
-//    }
     
 }
 
@@ -95,22 +77,6 @@ struct CardView: View {
         static let fontScale: CGFloat = 0.75
         static let piePadding: CGFloat = 4
         static let pieOpacity: Double = 0.4
-    }
-    
-}
-
-struct ThemeView: View {
-    
-    let title: String
-    let imageName: String
-    
-    var body: some View {
-        VStack {
-            Image(systemName: imageName)
-                .aspectRatio(contentMode: .fit)
-            Text(title)
-        }
-        .foregroundColor(.cyan)
     }
     
 }
