@@ -13,34 +13,36 @@ struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
 
     var body: some View {
-        AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in
-//                cardView(for: card)
-            if card.isMatched && !card.isFaceUp {
-                Rectangle().opacity(0)
-            } else {
-                CardView(card: card)
-                    .padding(4)
-                    .onTapGesture {
-                        viewModel.choose(card)
-                    }
+        VStack {
+            Text("\(viewModel.themeTopic)")
+                .font(.largeTitle)
+                .foregroundColor(viewModel.themeColor)
+                
+            AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in
+                if card.isMatched && !card.isFaceUp {
+                    Rectangle().opacity(0)
+                } else {
+                    CardView(card: card)
+                        .padding(4)
+                        .onTapGesture {
+                            viewModel.choose(card)
+                        }
+                }
             }
+            .foregroundColor(viewModel.themeColor)
+            .padding(.horizontal)
+            HStack(spacing: 45) {
+                Text("Score: \(viewModel.score)")
+                Button {
+                    viewModel.newGame()
+                } label: {
+                    Text("New Game")
+                }
+
+            }
+            .font(.title)
         }
-        .foregroundColor(.cyan)
-        .padding(.horizontal)
     }
-    
-//    @ViewBuilder
-//    private func cardView(for card: EmojiMemoryGame.Card) -> some View {
-//        if card.isMatched && !card.isFaceUp {
-//            Rectangle().opacity(0)
-//        } else {
-//            CardView(card: card)
-//                .padding(4)
-//                .onTapGesture {
-//                    viewModel.choose(card)
-//                }
-//        }
-//    }
     
 }
 
@@ -88,6 +90,7 @@ struct ContentView_Previews: PreviewProvider {
         let game = EmojiMemoryGame()
         EmojiMemoryGameView(viewModel: game)
             .preferredColorScheme(.dark)
+            .previewInterfaceOrientation(.portrait)
         EmojiMemoryGameView(viewModel: game)
             .preferredColorScheme(.light)
     }
