@@ -27,10 +27,53 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     struct Card: Identifiable {
         let id: Int
         
-        var isFaceUp: Bool = false
-        var isMatched: Bool = false
+        var isFaceUp: Bool = false {
+            didSet {
+                isFaceUp ? startUsingBonusTime() : stopUsingBonusTime()
+            }
+        }
+        var isMatched: Bool = false {
+            didSet {
+                stopUsingBonusTime()
+            }
+        }
         var isSeen: Bool = false
         let content: CardContent
+        
+        // MARK: - Time relevant setting
+        let bonusTimeLimit: TimeInterval = 5
+        var lastFaceUpDate: Date?
+        var pastFaceUpTime: TimeInterval = 0
+        var bonusTimeRemaining: TimeInterval {
+            return max(0, bonusTimeLimit - faceUpTime)
+        }
+        var bonusRemaining: Double {
+            return bonusTimeLimit > 0 && bonusTimeRemaining > 0 ? bonusTimeRemaining / bonusTimeLimit : 0
+        }
+        var hasEarnedBonus: Bool {
+            return isMatched && bonusTimeRemaining > 0
+        }
+        var isConsumingBonusTime: Bool {
+            return isFaceUp && !isMatched && bonusTimeRemaining > 0
+        }
+        
+        private var faceUpTime: TimeInterval {
+            if let lastFaceUpDate = lastFaceUpDate {
+                return pastFaceUpTime + Date().timeIntervalSince(lastFaceUpDate)
+            } else {
+                return pastFaceUpTime
+            }
+        }
+        
+        private mutating func startUsingBonusTime() {
+            guard isConsumingBonusTime, lastFaceUpDate == nil else { return }
+            lastFaceUpDate = Date()
+        }
+        
+        private mutating func stopUsingBonusTime() {
+            pastFaceUpTime = faceUpTime
+            lastFaceUpDate = nil
+        }
     }
     
     private var indexOfTheOneAndOnlyFaceUpCard: Int? {
@@ -56,5 +99,9 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                 indexOfTheOneAndOnlyFaceUpCard = chosenIndex
             }
         }
+    }
+    
+    mutating func shuffle() {
+        cards.shuffle()
     }
 }

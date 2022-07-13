@@ -90,4 +90,8 @@ class EmojiMemoryGame: ObservableObject {
             model = EmojiMemoryGame.createMemoryGame(with: theme)
         }
     }
+    
+    func shuffle() {
+        model.shuffle()
+    }
 }
